@@ -171,6 +171,8 @@ function generateResults() {
     const removeLengthLimitCheck = document.getElementById('disableNameLengthLimit');
     let isDisableNameLengthLimit = removeLengthLimitCheck.checked;
 
+	let amountOfConstants = 0;
+
     outputContainer.innerHTML = 'Генерация...';
 
     setTimeout(() => {
@@ -199,6 +201,7 @@ function generateResults() {
                             
                 if (rng.Next(10000) == 0) {
                     worldName = WORLD_NAME_DATA["special"]["TheConstant"];
+					amountOfConstants++;
                 }
             }
             while (worldName.length > 27 && !isDisableNameLengthLimit);          
@@ -236,7 +239,21 @@ function generateResults() {
         }
                 
         outputContainer.innerHTML = '';
-
+		
+		const constantsDisplay = document.createElement('span');
+		
+		let numberColor = '#000000';
+		if (amountOfConstants == 0)
+		{
+				numberColor = '#ff4444';
+		}
+		
+		constantsDisplay.innerHTML = `Количество Констант в выыдаче: <span style="color: ${numberColor}; font-weight: bold;">${amountOfConstants}</span>`;
+		constantsDisplay.style.display = 'block';
+		constantsDisplay.style.padding = '10px';
+			
+		outputContainer.appendChild(constantsDisplay);
+				
         if (genAmount > 1) {           
             const copyAllBtn = document.createElement('button');
             copyAllBtn.textContent = 'Копировать ⚡ ВСЁ ⚡';
