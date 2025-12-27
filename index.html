@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой Генератор</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+            background-color: #f4f4f9;
+        }
+		
+		.card {
+			background: white;
+			padding: 20px;
+			border-radius: 8px;
+			box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+			margin-bottom: 20px; /* Отступ между верхним и нижним блоком */
+			text-align: center;
+		}
+
+		/* 2. Специфика ШАПКИ (узкая) */
+		.controls-container {
+			width: 300px;  /* Фиксированная ширина для красоты инпутов */
+			max-width: 90%;
+		}
+
+		/* 3. Специфика РЕЗУЛЬТАТОВ (широкая) */
+		.results-container {
+			width: 900px;   /* Шире, чем шапка! */
+			max-width: 95%; /* Чтобы влезало в мобилки */
+			
+			/* Скрываем этот блок, пока он пустой (опционально) */
+			/* display: none; — если хотите скрывать до нажатия кнопки */
+			min-height: 50px;
+			display: flex;
+			flex-direction: column;
+		}
+		
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            box-sizing: border-box;
+        }
+		
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+		
+        button:hover {
+            background-color: #218838;
+        }
+		
+		#output {
+			text-align: left;
+			/* Убираем border-top, так как теперь это отдельный блок */
+			/* border-top: 1px solid #ddd; */ 
+			
+			/* Скролл, если результатов ОЧЕНЬ много */
+			max-height: 500px; 
+			overflow-y: auto;
+			padding-right: 5px; /* Чтобы скроллбар не наезжал на текст */
+		}
+		
+		/* Обновляем стиль контейнера результата */
+		.result-item {
+			background: #e9ecef;
+			padding: 8px;
+			margin-bottom: 5px;
+			border-radius: 4px;
+			
+			/* Новые свойства для выравнивания кнопки */
+			display: flex;
+			justify-content: space-between; /* Текст слева, кнопка справа */
+			align-items: center;
+		}
+
+		/* Стиль для кнопки копирования */
+		.copy-btn {
+			width: auto;         /* Перебиваем глобальный width: 100% */
+			margin: 0 0 0 10px;  /* Отступ слева от текста */
+			padding: 4px 8px;    /* Кнопка поменьше */
+			font-size: 12px;
+			background-color: #6c757d; /* Серый цвет, чтобы не отвлекать */
+			border-radius: 4px;
+			transition: background-color 0.2s;
+		}
+
+		.copy-btn:hover {
+			background-color: #5a6268;
+		}
+
+		/* Класс для зеленой кнопки (успех) */
+		.copy-btn.success {
+			background-color: #28a745;
+		}
+		
+		.checkbox-label {
+			display: flex;           /* Выстраивает элементы в ряд */
+			align-items: center;     /* Выравнивает их по вертикальному центру */
+			gap: 10px;               /* Делает красивый отступ между галочкой и текстом */
+			justify-content: center; /*Выравнивает содержимое по центру горизонтали*/
+			cursor: pointer;         /* Курсор-рука при наведении */
+			margin-top: 5px;        /* Небольшой отступ сверху для красоты */
+		}
+
+		/* На всякий случай сбросим ширину чекбокса, если она где-то задана как 100% */
+		.checkbox-label input[type="checkbox"] {
+			margin: 0;
+			width: auto;
+		}
+    </style>
+</head>
+<body>
+
+    <div class="card controls-container">
+        <h2>Генератор миров Terraria</h2>
+        
+        <p>Количество результатов:</p>
+        <input type="number" id="genAmount" value="10">
+        
+        <label class="checkbox-label" title="Убирает лимит генерации в 10,000 результатов&#10;✞​Да поможет вам Бог✞​">
+            <input type="checkbox" id="showAllResults">
+            Я не боюсь смерти
+        </label>
+        <label class="checkbox-label" title="Убирает ограничение имени лимита мира в 27 символов">
+            <input type="checkbox" id="disableNameLengthLimit">
+            Хочу побольше ( ͡° ͜ʖ ͡°)
+        </label>
+        
+        <button onclick="generateResults()">Сгенерировать</button>
+    </div>
+
+    <div class="card results-container">
+        <h3>Результаты:</h3> 
+        <div id="output"></div>
+    </div>
+
+	<script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
