@@ -162,76 +162,65 @@ function generateResults() {
     if (isNaN(genAmount) || genAmount <= 0) {
         genAmount = 1;
     }
-	
-	let requestedGenAmount = genAmount;
-	
-	let isShowAll = document.getElementById('showAllResults');
-	if (!isShowAll.checked && genAmount > 10000)
-	{
-		genAmount = 10000;
-	}
-	
-	const removeLengthLimitCheck = document.getElementById('disableNameLengthLimit');
-	
-	let isDisableNameLengthLimit = removeLengthLimitCheck.checked;
+
+    let isShowAll = document.getElementById('showAllResults');
+    if (!isShowAll.checked && genAmount > 10000) {
+        genAmount = 10000;
+    }
+
+    const removeLengthLimitCheck = document.getElementById('disableNameLengthLimit');
+    let isDisableNameLengthLimit = removeLengthLimitCheck.checked;
 
     outputContainer.innerHTML = 'Генерация...';
 
     setTimeout(() => {
         const rng = new UnifiedRandom();
         
-        const fragment = document.createDocumentFragment();
-        
-        let hasError = false;
+        const allGeneratedNames = []; 
+        const resultsFragment = document.createDocumentFragment();
 
         for (let i = 0; i < genAmount; i++) {
-			
-			let worldName = '';
-			
-			do {
-				let template = SelectRandom(WorldNameCategory.Compositions, rng);
+            let worldName = '';
+            
+            do {
+                let template = SelectRandom(WorldNameCategory.Compositions, rng);
 
-				if (template.includes("{Adjective}")) {
-					template = template.replace("{Adjective}", SelectRandom(WorldNameCategory.Adjectives, rng));
-				}
-				if (template.includes("{Location}")) {
-					template = template.replace("{Location}", SelectRandom(WorldNameCategory.Locations, rng));
-				}
-				if (template.includes("{Noun}")) {
-					template = template.replace("{Noun}", SelectRandom(WorldNameCategory.Nouns, rng));
-				}
-							
-				worldName = template;
-							
-				if (rng.Next(10000) == 0)
-				{
-					worldName = WORLD_NAME_DATA["special"]["TheConstant"];
-				}
-			}
-			while (worldName.length > 27 && !isDisableNameLengthLimit);          
+                if (template.includes("{Adjective}")) {
+                    template = template.replace("{Adjective}", SelectRandom(WorldNameCategory.Adjectives, rng));
+                }
+                if (template.includes("{Location}")) {
+                    template = template.replace("{Location}", SelectRandom(WorldNameCategory.Locations, rng));
+                }
+                if (template.includes("{Noun}")) {
+                    template = template.replace("{Noun}", SelectRandom(WorldNameCategory.Nouns, rng));
+                }
+                            
+                worldName = template;
+                            
+                if (rng.Next(10000) == 0) {
+                    worldName = WORLD_NAME_DATA["special"]["TheConstant"];
+                }
+            }
+            while (worldName.length > 27 && !isDisableNameLengthLimit);          
 
-			const div = document.createElement('div');
+            allGeneratedNames.push(worldName);
+
+            const div = document.createElement('div');
             div.className = 'result-item';
 
-            // 1. Создаем спан для текста (чтобы он был отдельным элементом)
             const textSpan = document.createElement('span');
             textSpan.textContent = `Генерация #${i + 1}: ${worldName}`;
             
-            // 2. Создаем кнопку копирования
             const copyBtn = document.createElement('button');
             copyBtn.textContent = 'Копировать';
             copyBtn.className = 'copy-btn';
             
-            // 3. Логика копирования при клике
             copyBtn.onclick = function() {
-                // Копируем САМО ЧИСЛО (worldName) в буфер
                 navigator.clipboard.writeText(worldName).then(() => {
-                    // Визуальный эффект успеха
                     const originalText = copyBtn.textContent;
                     copyBtn.textContent = 'Скопировано!';
                     copyBtn.classList.add('success');
                     
-                    // Возвращаем текст кнопки через 1 секунду
                     setTimeout(() => {
                         copyBtn.textContent = originalText;
                         copyBtn.classList.remove('success');
@@ -243,10 +232,37 @@ function generateResults() {
 
             div.appendChild(textSpan);
             div.appendChild(copyBtn);
-            fragment.appendChild(div);
+            resultsFragment.appendChild(div);
         }
-
+                
         outputContainer.innerHTML = '';
-        outputContainer.appendChild(fragment);
+
+        if (genAmount > 1) {           
+            const copyAllBtn = document.createElement('button');
+            copyAllBtn.textContent = 'Копировать ⚡ ВСЁ ⚡';
+            copyAllBtn.className = 'copy-btn copy-all-btn';
+			copyAllBtn.style.marginBottom = '15px';
+            
+            copyAllBtn.onclick = function() {
+                const fullText = allGeneratedNames.join('\n');
+
+                navigator.clipboard.writeText(fullText).then(() => {
+                    const originalText = copyAllBtn.textContent;
+                    copyAllBtn.textContent = '⚡ ВСЁ ⚡ скопировано!';
+                    copyAllBtn.classList.add('success');
+                    
+                    setTimeout(() => {
+                        copyAllBtn.textContent = originalText;
+                        copyAllBtn.classList.remove('success');
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Ошибка копирования: ', err);
+                });
+            };          
+
+            outputContainer.appendChild(copyAllBtn);
+        }
+        
+        outputContainer.appendChild(resultsFragment);
     }, 10);
 }
