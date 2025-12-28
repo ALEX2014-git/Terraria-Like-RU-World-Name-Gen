@@ -219,14 +219,20 @@ function generateResults() {
             copyBtn.className = 'copy-btn';
             
             copyBtn.onclick = function() {
+				if (copyBtn.isDisplayingCopiedMsg)
+				{
+					return;
+				}
                 navigator.clipboard.writeText(worldName).then(() => {
                     const originalText = copyBtn.textContent;
+					copyBtn.isDisplayingCopiedMsg = true;
                     copyBtn.textContent = 'Скопировано!';
                     copyBtn.classList.add('success');
                     
                     setTimeout(() => {
                         copyBtn.textContent = originalText;
                         copyBtn.classList.remove('success');
+						copyBtn.isDisplayingCopiedMsg = false;
                     }, 1000);
                 }).catch(err => {
                     console.error('Ошибка копирования: ', err);
@@ -259,18 +265,25 @@ function generateResults() {
             copyAllBtn.textContent = 'Копировать ⚡ ВСЁ ⚡';
             copyAllBtn.className = 'copy-btn copy-all-btn';
 			copyAllBtn.style.marginBottom = '15px';
+			copyAllBtn.isDisplayingCopiedMsg = false;
             
             copyAllBtn.onclick = function() {
+				if (copyAllBtn.isDisplayingCopiedMsg)
+				{
+					return;
+				}
                 const fullText = allGeneratedNames.join('\n');
 
                 navigator.clipboard.writeText(fullText).then(() => {
                     const originalText = copyAllBtn.textContent;
+					copyAllBtn.isDisplayingCopiedMsg = true;
                     copyAllBtn.textContent = '⚡ ВСЁ ⚡ скопировано!';
                     copyAllBtn.classList.add('success');
                     
                     setTimeout(() => {
                         copyAllBtn.textContent = originalText;
                         copyAllBtn.classList.remove('success');
+						copyAllBtn.isDisplayingCopiedMsg = false;
                     }, 2000);
                 }).catch(err => {
                     console.error('Ошибка копирования: ', err);
